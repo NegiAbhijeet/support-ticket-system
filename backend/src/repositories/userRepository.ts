@@ -18,4 +18,7 @@ export const UserRepository = {
     const newUser = new User(data);
     return newUser.save();
   },
+  updateProfile: async (id: string, data: { title: string; description: string }): Promise<IUser | null> => {
+    return User.findByIdAndUpdate(id, { $set: { title: data.title, description: data.description } }, { new: true });
+  },
 };

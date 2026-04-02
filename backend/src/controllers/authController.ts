@@ -52,6 +52,32 @@ export const AuthController = {
     } catch (err) {
       next(err);
     }
-  }
+  },
 
+  updateProfile: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const userId = req.user?.id || req.user?._id;
+      if (!userId) {
+        return res.status(401).json({ success: false, message: 'Unauthorized' });
+      }
+
+      const { title, description } = req.body;
+
+      if (typeof title !== 'string' || typeof description !== 'string') {
+        return res.status(400).json({ success: false, message: 'Title and description are required.' });
+      }
+      if (title.length > 100) {
+        return res.status(400).json({ success: false, message: 'Title cannot exceed 100 characters.' });
+      }
+      if (description.length > 500) {
+        return res.status(400).json({ success: false, message: 'Description cannot exceed 500 characters.' });
+      }
+
+      // Update user
+      const updatedUser = await AuthService.updateProfile(userId, { title, description });
+      res.status(200).json({ success: true, data: updatedUser });
+    } catch (err) {
+      next(err);
+    }
+  }
 };

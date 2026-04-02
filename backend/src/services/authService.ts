@@ -52,6 +52,21 @@ export const AuthService = {
     };
   },
 
+  updateProfile: async (userId: string, data: { title: string; description: string }) => {
+    const updatedUser = await UserRepository.updateProfile(userId, data);
+    if (!updatedUser) {
+      throw { status: 404, message: 'User not found' };
+    }
+    return {
+      id: updatedUser.id,
+      name: updatedUser.name,
+      email: updatedUser.email,
+      usertype: updatedUser.usertype,
+      title: updatedUser.title,
+      description: updatedUser.description,
+    };
+  },
+
   login: async (dto: LoginDTO): Promise<AuthResult> => {
     const user = await UserRepository.findByEmail(dto.email);
     if (!user) {

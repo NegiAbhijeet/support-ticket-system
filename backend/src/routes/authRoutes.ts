@@ -6,9 +6,13 @@ const router = Router();
 console.log("inside app routes")
 // Public routes
 
+
 router.post('/register', AuthController.register);
 router.post('/login', AuthController.login);
 router.post('/logout', AuthController.logout);
+
+// User profile update
+router.put('/me', authGuard, AuthController.updateProfile);
 
 
 router.get('/me', authGuard, (req: AuthRequest, res) => {
