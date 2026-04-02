@@ -1,17 +1,18 @@
 {
   "version": 2,
-  "name": "support-ticket-system",
-  "experimental": {
-    "services": {
-      "frontend": {
-        "entrypoint": "frontend",
-        "framework": "nextjs",
-        "routePrefix": "/"
-      },
-      "backend": {
-        "entrypoint": "backend",
-        "routePrefix": "/_/backend"
-      }
+  "builds": [
+    {
+      "src": "server.js",
+      "use": "@vercel/node"
     }
-  }
+  ],
+  "routes": [
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/server.js"
+    }
+  ]
 }
