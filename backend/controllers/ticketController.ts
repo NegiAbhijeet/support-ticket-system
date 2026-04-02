@@ -1,0 +1,49 @@
+import { Request, Response, NextFunction } from 'express';
+import Ticket, { ITicket } from '../models/Ticket';
+import { generateTicketAIFields } from '../services/aiService';
+import mongoose from 'mongoose';
+
+export const createTicket = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { title, description } = req.body;
+    if (!title || !description) {
+      return res.status(400).json({ message: 'Title and description are required.' });
+    }
+    // Call AI API (mocked)
+    const aiFields = await generateTicketAIFields(title, description);
+    const ticket = new Ticket({
+      title,
+      description,
+      ...aiFields,
+    });
+    await ticket.save();
+    return res.status(201).json(ticket);
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const getAllTickets = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const tickets = await Ticket.find().sort({ createdAt: -1 });
+    return res.status(200).json(tickets);
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const getTicketById = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(404).json({ message: 'Ticket not found.' });
+    }
+    const ticket = await Ticket.findById(id);
+    if (!ticket) {
+      return res.status(404).json({ message: 'Ticket not found.' });
+    }
+    return res.status(200).json(ticket);
+  } catch (err) {
+    next(err);
+  }
+};

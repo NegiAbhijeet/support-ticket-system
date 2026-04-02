@@ -5,8 +5,10 @@ import { authGuard, AuthRequest } from '../middleware/authGuard';
 const router = Router();
 console.log("inside app routes")
 // Public routes
+
 router.post('/register', AuthController.register);
 router.post('/login', AuthController.login);
+router.post('/logout', AuthController.logout);
 
 
 router.get('/me', authGuard, (req: AuthRequest, res) => {

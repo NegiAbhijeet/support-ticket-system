@@ -2,6 +2,8 @@
 
 import { useContext, useEffect, useState } from 'react';
 import Link from 'next/link';
+
+import { apiFetch } from '../lib/api';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 
@@ -9,20 +11,14 @@ export default function Navbar() {
   const { user, setUser } = useAuth();
   const router = useRouter();
 
-  useEffect(() => {
-    const userStr = localStorage.getItem('user');
-    if (userStr) {
-      try {
-        setUser(JSON.parse(userStr));
-      } catch (e) {
-        console.error('Failed to parse user from local storage');
-      }
-    }
-  }, []);
 
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+
+  const handleLogout = async () => {
+    try {
+      await apiFetch('/auth/logout', { method: 'POST' });
+    } catch (e) {
+      // Ignore errors, proceed with local logout
+    }
     setUser(null);
     router.push('/login');
   };
