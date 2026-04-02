@@ -2,17 +2,22 @@
   "version": 2,
   "builds": [
     {
-      "src": "server.js",
+      "src": "frontend/next.config.ts",
+      "use": "@vercel/next"
+    },
+    {
+      "src": "backend/src/index.ts",
       "use": "@vercel/node"
     }
   ],
   "routes": [
     {
-      "handle": "filesystem"
+      "src": "/api/(.*)",
+      "dest": "/backend/src/index.ts"
     },
     {
       "src": "/(.*)",
-      "dest": "/server.js"
+      "dest": "/frontend/$1"
     }
   ]
 }
