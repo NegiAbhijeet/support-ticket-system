@@ -30,7 +30,7 @@ export default function LoginPage() {
       // 🔥 get user after cookie is set
       await fetchUser();
 
-      // router.push('/');
+      router.replace('/');
     } catch (err: any) {
       setError(err.message || 'Login failed');
     } finally {
