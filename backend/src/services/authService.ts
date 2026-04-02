@@ -20,39 +20,40 @@ export interface AuthResult {
     id: string;
     name: string;
     email: string;
-    role: string;
+    usertype: string;
   };
 }
 
 export const AuthService = {
   register: async (dto: RegisterDTO): Promise<AuthResult> => {
-    const existing = UserRepository.findByEmail(dto.email);
+    console.log("inside auth service", dto)
+    const existing = await UserRepository.findByEmail(dto.email);
     if (existing) {
       throw { status: 409, message: 'Email already in use' };
     }
 
     const passwordHash = await bcrypt.hash(dto.password, 12);
-    const user = UserRepository.create({
+    const user = await UserRepository.create({
       name: dto.name,
       email: dto.email,
       passwordHash,
-      role: 'user',
+      usertype: 'user', // only 'user' type allowed via registration
     });
 
     const token = jwt.sign(
-      { id: user.id, email: user.email, role: user.role },
+      { id: user.id, email: user.email, usertype: user.usertype },
       config.jwtSecret,
       { expiresIn: config.jwtExpiresIn }
     );
 
     return {
       token,
-      user: { id: user.id, name: user.name, email: user.email, role: user.role },
+      user: { id: user.id, name: user.name, email: user.email, usertype: user.usertype },
     };
   },
 
   login: async (dto: LoginDTO): Promise<AuthResult> => {
-    const user = UserRepository.findByEmail(dto.email);
+    const user = await UserRepository.findByEmail(dto.email);
     if (!user) {
       throw { status: 401, message: 'Invalid credentials' };
     }
@@ -63,14 +64,14 @@ export const AuthService = {
     }
 
     const token = jwt.sign(
-      { id: user.id, email: user.email, role: user.role },
+      { id: user.id, email: user.email, usertype: user.usertype },
       config.jwtSecret,
       { expiresIn: config.jwtExpiresIn }
     );
 
     return {
       token,
-      user: { id: user.id, name: user.name, email: user.email, role: user.role },
+      user: { id: user.id, name: user.name, email: user.email, usertype: user.usertype },
     };
   },
 };

@@ -1,32 +1,21 @@
-// In-memory user store (replace with DB in production)
-export interface User {
-  id: string;
-  name: string;
-  email: string;
-  passwordHash: string;
-  role: 'admin' | 'user';
-  createdAt: Date;
-}
-
-let users: User[] = [];
-let idCounter = 1;
+import User, { IUser } from '../models/User';
 
 export const UserRepository = {
-  findByEmail: (email: string): User | undefined => {
-    return users.find((u) => u.email === email);
+  findByEmail: async (email: string): Promise<IUser | null> => {
+    return User.findOne({ email }).exec();
   },
 
-  findById: (id: string): User | undefined => {
-    return users.find((u) => u.id === id);
+  findById: async (id: string): Promise<IUser | null> => {
+    return User.findById(id).exec();
   },
 
-  create: (data: Omit<User, 'id' | 'createdAt'>): User => {
-    const user: User = {
-      id: String(idCounter++),
-      ...data,
-      createdAt: new Date(),
-    };
-    users.push(user);
-    return user;
+  create: async (data: {
+    name: string;
+    email: string;
+    passwordHash: string;
+    usertype: 'admin' | 'user';
+  }): Promise<IUser> => {
+    const newUser = new User(data);
+    return newUser.save();
   },
 };
