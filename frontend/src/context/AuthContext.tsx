@@ -13,7 +13,6 @@ type AuthContextType = {
   user: User | null;
   loading: boolean;
   fetchUser: () => Promise<void>;
-  logout: () => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -25,22 +24,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const fetchUser = async () => {
     try {
       const res = await authApi.getMe();
-      console.log('User data:', res.data);
-      setUser(res.data.data);
-    } catch {
+      console.log('Fetched user:', res.data);
+      setUser(res.data);
+    } catch (err) {
+      console.log('Auth failed:', err);
       setUser(null);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const logout = async () => {
-    try {
-      await authApi.logout();
-    } catch (e) {
-      console.log('Logout error:', e);
-    } finally {
-      setUser(null);
     }
   };
 
@@ -49,17 +39,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, loading, fetchUser, logout }}>
+    <AuthContext.Provider value={{ user, setUser, loading, fetchUser }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
-// hook
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used inside AuthProvider');
-  }
+  if (!context) throw new Error('useAuth must be used inside AuthProvider');
   return context;
 };
