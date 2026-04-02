@@ -13,6 +13,7 @@ type AuthContextType = {
   user: User | null;
   loading: boolean;
   fetchUser: () => Promise<void>;
+  setUser: React.Dispatch<React.SetStateAction<User | null>>; // <-- add this
 };
 
 const AuthContext = createContext<AuthContextType | null>(null);
