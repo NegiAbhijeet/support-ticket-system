@@ -1,7 +1,9 @@
+
 import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
+import jwt, { SignOptions } from 'jsonwebtoken';
 import { UserRepository } from '../repositories/userRepository';
 import { config } from '../config';
+import { IUser } from '../models/User';
 
 export interface RegisterDTO {
   name: string;
@@ -41,14 +43,14 @@ export const AuthService = {
     });
 
     const token = jwt.sign(
-      { id: user.id, email: user.email, usertype: user.usertype },
-      config.jwtSecret,
-      { expiresIn: config.jwtExpiresIn }
+      { id: user._id.toString(), email: user.email, usertype: user.usertype },
+      config.jwtSecret as string,
+      { expiresIn: config.jwtExpiresIn } as SignOptions
     );
 
     return {
       token,
-      user: { id: user.id, name: user.name, email: user.email, usertype: user.usertype },
+      user: { id: user._id.toString(), name: user.name, email: user.email, usertype: user.usertype },
     };
   },
 
@@ -58,7 +60,7 @@ export const AuthService = {
       throw { status: 404, message: 'User not found' };
     }
     return {
-      id: updatedUser.id,
+      id: updatedUser._id.toString(),
       name: updatedUser.name,
       email: updatedUser.email,
       usertype: updatedUser.usertype,
@@ -79,14 +81,14 @@ export const AuthService = {
     }
 
     const token = jwt.sign(
-      { id: user.id, email: user.email, usertype: user.usertype },
-      config.jwtSecret,
-      { expiresIn: config.jwtExpiresIn }
+      { id: user._id.toString(), email: user.email, usertype: user.usertype },
+      config.jwtSecret as string,
+      { expiresIn: config.jwtExpiresIn } as SignOptions
     );
 
     return {
       token,
-      user: { id: user.id, name: user.name, email: user.email, usertype: user.usertype },
+      user: { id: user._id.toString(), name: user.name, email: user.email, usertype: user.usertype },
     };
   },
 };

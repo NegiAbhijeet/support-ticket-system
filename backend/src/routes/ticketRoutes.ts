@@ -1,2 +1,10 @@
-export { };
-// This file is intentionally left blank to avoid import errors. The actual ticketRoutes.ts is in the parent routes directory.
+import { Router } from 'express';
+import { createTicket, getAllTickets, getTicketById } from '../controllers/ticketController';
+
+const router = Router();
+
+router.post('/tickets', createTicket);
+router.get('/tickets', getAllTickets);
+router.get('/tickets/:id', getTicketById);
+
+export default router;

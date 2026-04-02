@@ -34,7 +34,11 @@ export const getAllTickets = async (req: Request, res: Response, next: NextFunct
 
 export const getTicketById = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { id } = req.params;
+    let { id } = req.params;
+    // Ensure id is a string for Mongoose
+    if (Array.isArray(id)) {
+      id = id[0];
+    }
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(404).json({ message: 'Ticket not found.' });
     }

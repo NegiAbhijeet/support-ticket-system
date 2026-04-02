@@ -2,12 +2,13 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
+// @ts-ignore: No type definitions for cookie-parser
 import cookieParser from 'cookie-parser';
 
 import { errorHandler } from './middleware/errorHandler';
 
 import authRoutes from './routes/authRoutes';
-import ticketRoutes from '../routes/ticketRoutes';
+import ticketRoutes from './routes/ticketRoutes';
 
 const app = express();
 app.use(cookieParser());
