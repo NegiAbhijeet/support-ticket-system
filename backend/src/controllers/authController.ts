@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
+import { AuthRequest } from '../middleware/authGuard';
 import { AuthService } from '../services/authService';
 
 export const AuthController = {
@@ -54,9 +55,9 @@ export const AuthController = {
     }
   },
 
-  updateProfile: async (req: Request, res: Response, next: NextFunction) => {
+  updateProfile: async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
-      const userId = req.user?.id || req.user?._id;
+      const userId = req.user?.id;
       if (!userId) {
         return res.status(401).json({ success: false, message: 'Unauthorized' });
       }
