@@ -34,8 +34,8 @@ export const AuthController = {
       // ✅ Set token in cookie
       res.cookie('token', result.token, {
         httpOnly: true,
-        secure: false,     // localhost
-        sameSite: 'lax',   // ✅ now works
+        secure: true,          // ✅ required on HTTPS (Vercel)
+        sameSite: 'none',      // ✅ required for cross-domain
         path: '/',
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
