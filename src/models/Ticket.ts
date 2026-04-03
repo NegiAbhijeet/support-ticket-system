@@ -10,6 +10,7 @@ export interface ITicket extends Document {
   createdAt: Date;
 }
 
+
 const ticketSchema = new Schema<ITicket>({
   title: { type: String, required: true },
   description: { type: String, required: true },
@@ -18,6 +19,7 @@ const ticketSchema = new Schema<ITicket>({
   tags: { type: [String], required: true },
   suggestedResponse: { type: String, required: true },
   createdAt: { type: Date, default: Date.now },
+  user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
 });
 
 export default model<ITicket>('Ticket', ticketSchema);

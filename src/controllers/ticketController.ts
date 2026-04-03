@@ -3,7 +3,9 @@ import Ticket, { ITicket } from '../models/Ticket';
 import { generateTicketAIFields } from '../services/aiService';
 import mongoose from 'mongoose';
 
-export const createTicket = async (req: Request, res: Response, next: NextFunction) => {
+import { AuthRequest } from '../middleware/authGuard';
+
+export const createTicket = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const { title, description } = req.body;
     if (!title || !description) {
@@ -15,6 +17,7 @@ export const createTicket = async (req: Request, res: Response, next: NextFuncti
       title,
       description,
       ...aiFields,
+      user: req.user?.id,
     });
     await ticket.save();
     return res.status(201).json(ticket);
@@ -23,9 +26,9 @@ export const createTicket = async (req: Request, res: Response, next: NextFuncti
   }
 };
 
-export const getAllTickets = async (req: Request, res: Response, next: NextFunction) => {
+export const getAllTickets = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
-    const tickets = await Ticket.find().sort({ createdAt: -1 });
+    const tickets = await Ticket.find({ user: req.user?.id }).sort({ createdAt: -1 });
     return res.status(200).json(tickets);
   } catch (err) {
     next(err);
