@@ -3,6 +3,6 @@ dotenv.config();
 
 export const config = {
   port: process.env.PORT || 5000,
-  mongoUri: process.env.MONGO_URI || 'mongodb://localhost:27017/support-ticket-system',
-  aiApiKey: process.env.AI_API_KEY || '',
+  mongoUri: process.env.MONGODB_URI || 'mongodb://localhost:27017/support-ticket-system',
+  aiApiKey: process.env.GEMINI_API_KEY || '',
 };
